@@ -18,8 +18,10 @@ params:
     - networking
     - storage
     - backup
+    - parameters
   properties:
     backup:
+      title: Backup
       type: object
       required:
         - backup_retention_period
@@ -44,6 +46,7 @@ params:
           default: false
 
     networking:
+      title: Networking
       type: object
       properties:
         allow_vpc_access:
@@ -52,7 +55,28 @@ params:
           type: boolean
           default: true
 
+    parameters:
+      title: Database Parameters
+      type: array
+      items:
+        type: object
+        required:
+          - name
+          - value
+        properties:
+          name:
+            type: string
+          value:
+            type: string
+          apply_method:
+            type: string
+            default: immediate
+            enum:
+              - immediate
+              - pending-reboot
+
     database:
+      title: Database
       type: object
       required:
         - username
@@ -190,6 +214,7 @@ params:
             - db.x2g.xlarge
 
     storage:
+      title: Storage
       type: object
       required:
         - allocated
@@ -226,8 +251,6 @@ params:
           minimum: 1000
           max: 256000
 
-# schema-connections.json
-# Named list of input connections (artifacts) (map[name]artifact)
 connections:
   required:
     - network
@@ -235,26 +258,14 @@ connections:
     network:
       $ref: massdriver/aws-regional-cloud
 
-# schema-artifacts.json
-# Named list of output artifacts  (map[name]artifact)
 artifacts:
   properties: {}
-  # required:
-  #   - mrc
-  # properties:
-  #   mrc:
-  #     $ref: ../../definitions/artifacts/aws-regional-cloud.json
 
-# schema-ui.json
-# List of form customizations for params-schema
 ui:
   ui:order:
+    - database
+    - networking
+    - storage
+    - backup
+    - parameters
     - "*"
-  ## set top level ui:wiget
-  # secret_key:
-  #    ui:widget: "password"
-  ## Set key in an array of objects
-  # secrets:
-  #   items:
-  #     mdKeyId:
-  #       ui:widget: "hidden"

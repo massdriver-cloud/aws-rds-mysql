@@ -9,3 +9,6 @@ plan: build
 .PHONY: apply
 apply: build
 	cd ./src && terraform apply -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tfvars.json
+
+destroy: build
+	cd ./src && terraform destroy -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tfvars.json
