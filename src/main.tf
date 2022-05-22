@@ -4,6 +4,8 @@ locals {
     protocol = "tcp"
     port     = 3306
   }
+
+  paramter_group_family = "mysql${var.database.engine_version}"
 }
 
 resource "random_password" "root_password" {
@@ -44,38 +46,19 @@ resource "aws_db_instance" "main" {
 
   # TODO: accept vpc_security_group_ids
   # vpc_security_group_ids              = compact(concat(aws_security_group.main.*.id, var.vpc_security_group_ids))  
-  vpc_security_group_ids = [aws_security_group.main.id]
-  db_subnet_group_name   = aws_db_subnet_group.main.name
 
-  # parameter_group_name   = var.parameter_group_name
-  # option_group_name      = var.option_group_name
-
-  # availability_zone   = var.availability_zone
-  # multi_az            = var.multi_az
-
-  # apply_immediately           = var.apply_immediately
-  # maintenance_window          = var.maintenance_window
-
-  # replicate_source_db     = var.replicate_source_db
-  # replica_mode            = var.replica_mode
-
-  # performance_insights_enabled          = var.performance_insights_enabled
-  # performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
-  # performance_insights_kms_key_id       = var.performance_insights_enabled ? var.performance_insights_kms_key_id : null  
-
-  # monitoring_interval     = var.monitoring_interval
-  # monitoring_role_arn     = var.monitoring_interval > 0 ? local.monitoring_role_arn : null
-  # enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
-  # audit, error, general, slowquery
-
+  vpc_security_group_ids    = [aws_security_group.main.id]
+  db_subnet_group_name      = aws_db_subnet_group.main.name
+  parameter_group_name      = aws_db_parameter_group.main.name
   copy_tags_to_snapshot     = true
   deletion_protection       = var.database.deletion_protection
   skip_final_snapshot       = var.backup.skip_final_snapshot
   final_snapshot_identifier = var.backup.skip_final_snapshot ? null : "${var.md_metadata.name_prefix}-${element(concat(random_id.snapshot_identifier.*.hex, [""]), 0)}"
-
-  # backup_retention_period = var.backup_retention_period
+  backup_retention_period   = var.backup.retention_period
+  delete_automated_backups  = var.backup.delete_automated_backups
+  # TODO: best way to represent this in the UI?
+  # Need time-only widget: https://github.com/rjsf-team/react-jsonschema-form/tree/3ec17f1c0ff40401b7a99c5e9891ac2834a1e73f/packages/core/src/components/widgets
   # backup_window           = var.backup_window  
-  # delete_automated_backups = var.delete_automated_backups
 
   lifecycle {
     ignore_changes = [
@@ -120,6 +103,32 @@ resource "aws_security_group_rule" "vpc_ingress" {
   cidr_blocks = [var.network.data.infrastructure.cidr]
 
   security_group_id = aws_security_group.main.id
+}
+
+resource "aws_db_parameter_group" "main" {
+  name_prefix = var.md_metadata.name_prefix
+  description = "Paramter group for RDS MySQL ${var.md_metadata.name_prefix}"
+  family      = local.paramter_group_family
+
+  dynamic "parameter" {
+    for_each = var.parameters
+    content {
+      name         = parameter.value.name
+      value        = parameter.value.value
+      apply_method = lookup(parameter.value, "apply_method", null)
+    }
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      "Name" = var.name
+    },
+  )
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 output "mysql" {

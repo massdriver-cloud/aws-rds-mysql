@@ -21,12 +21,28 @@ params:
   properties:
     backup:
       type: object
+      required:
+        - backup_retention_period
       properties:
+        backup_retention_period:
+          title: Backup Retention Period
+          description: The days to retain backups for. Must be between 0 and 35. Must be greater than 0 if the database is used as a source for a Read Replica.
+          type: integer
+          default: 7
+          minimum: 0
+          maximum: 35
+        delete_automated_backups:
+          title: Delete Automated Backups
+          description: Specifies whether to remove automated backups immediately after the DB instance is deleted.
+          type: boolean
+          default: true
+
         skip_final_snapshot:
           title: Skip Final Snapshot
           description: Determines whether a final DB snapshot is created before the DB cluster is deleted. If true is specified, no DB snapshot is created.
           type: boolean
           default: false
+
     networking:
       type: object
       properties:
@@ -50,7 +66,7 @@ params:
           default: true
         username:
           title: Username
-          description: Username for the 'root' DB user
+          description: Username for the 'root' DB user.
           type: string
           default: root
           minLength: 3
@@ -58,7 +74,7 @@ params:
           pattern: "[a-zA-Z0-9_]+"
         engine_version:
           title: Version
-          description: Version of MySQL to use
+          description: Version of MySQL to use.
           type: string
           default: "8.0"
           enum:
@@ -66,7 +82,7 @@ params:
             - "8.0"
         instance_class:
           title: Instance Class
-          description: The instance type of the RDS instance
+          description: The instance type of the RDS instance.
           type: string
           default: db.t3.medium
           enum:
@@ -182,7 +198,7 @@ params:
       properties:
         allocated:
           title: Allocated Storage
-          description: The allocated storage in gigabytes
+          description: The allocated storage in gigabytes.
           type: integer
           minimum: 100
           default: 100
@@ -196,7 +212,7 @@ params:
           maximum: 65536
         type:
           title: Storage Type
-          description: One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). The default is 'io1' if iops is specified, 'gp2' if not
+          description: One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). The default is 'io1' if iops is specified, 'gp2' if not.
           type: string
           default: gp2
           enum:
@@ -205,21 +221,10 @@ params:
             - io1
         iops:
           title: IOPS
-          description: "The amount of provisioned IOPS."
+          description: The amount of provisioned IOPS.
           type: integer
           minimum: 1000
           max: 256000
-
-    # security:
-    #   type: object
-    #   # target network subnets (public, private, internal)
-    # monitoring:
-    #   type: object
-    #   properties:
-    #     - type: integer
-    #       title: CPU Threshold
-    #     - type: integer
-    #       title: RAM Threshold
 
 # schema-connections.json
 # Named list of input connections (artifacts) (map[name]artifact)
