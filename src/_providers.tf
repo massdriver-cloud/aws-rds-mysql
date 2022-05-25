@@ -5,10 +5,11 @@ terraform {
     #   source  = "massdriver-cloud/massdriver"
     #   version = "~> 1.0"
     # }
-    # aws = {
-    #   source  = "hashicorp/aws"
-    #   version = "~> 4.0"
-    # }
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+
     # azurerm = {
     #   source  = "hashicorp/azurerm"
     #   version = "~> 3.0"
@@ -32,16 +33,16 @@ terraform {
   }
 }
 
-# provider "aws" {
-#   region     = var.aws_region
-#   assume_role {
-#     role_arn    = var.aws_authentication.data.arn
-#     external_id = var.aws_authentication.data.external_id
-#   }
-#   default_tags {
-#     tags = var.md_metadata.default_tags
-#   }
-# }
+provider "aws" {
+  region = var.aws_region
+  assume_role {
+    role_arn    = var.aws_authentication.data.arn
+    external_id = var.aws_authentication.data.external_id
+  }
+  default_tags {
+    tags = var.md_metadata.default_tags
+  }
+}
 
 # provider "azurerm" {
 #   features {}
