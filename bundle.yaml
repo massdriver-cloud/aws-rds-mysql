@@ -58,6 +58,7 @@ params:
       title: Database Parameters
       # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.MySQL.Parameters.html
       type: array
+      default: []
       items:
         type: object
         required:
