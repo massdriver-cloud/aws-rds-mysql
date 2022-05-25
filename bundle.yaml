@@ -254,9 +254,12 @@ params:
 connections:
   required:
     - network
+    - aws_authentication
   properties:
     network:
       $ref: massdriver/aws-regional-cloud
+    aws_authentication:
+      $ref: massdriver/aws-iam-role
 
 artifacts:
   properties: {}
