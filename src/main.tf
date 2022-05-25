@@ -6,6 +6,7 @@ locals {
   }
 
   paramter_group_family = "mysql${var.database.engine_version}"
+  parameters            = (var.parameters == null ? [] : var.parameters)
 }
 
 resource "random_password" "root_password" {
@@ -56,6 +57,7 @@ resource "aws_db_instance" "main" {
   final_snapshot_identifier = var.backup.skip_final_snapshot ? null : "${var.md_metadata.name_prefix}-${element(concat(random_id.snapshot_identifier.*.hex, [""]), 0)}"
   backup_retention_period   = var.backup.retention_period
   delete_automated_backups  = var.backup.delete_automated_backups
+
   # TODO: best way to represent this in the UI?
   # Need time-only widget: https://github.com/rjsf-team/react-jsonschema-form/tree/3ec17f1c0ff40401b7a99c5e9891ac2834a1e73f/packages/core/src/components/widgets
   # backup_window           = var.backup_window  
@@ -111,7 +113,7 @@ resource "aws_db_parameter_group" "main" {
   family      = local.paramter_group_family
 
   dynamic "parameter" {
-    for_each = var.parameters
+    for_each = local.parameters
     content {
       name         = parameter.value.name
       value        = parameter.value.value

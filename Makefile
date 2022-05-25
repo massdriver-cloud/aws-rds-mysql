@@ -1,6 +1,6 @@
 .PHONY: build
 build:
-	mass bundle build
+	mass bundle build bundle.yaml
 	
 .PHONY: plan
 plan: build
