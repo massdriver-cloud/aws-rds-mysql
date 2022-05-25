@@ -12,3 +12,6 @@ apply: build
 
 destroy: build
 	cd ./src && terraform destroy -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tfvars.json
+
+dev.validate: build
+	mass schema validate -s ./schema-params.json -d src/dev.params.tfvars.json
