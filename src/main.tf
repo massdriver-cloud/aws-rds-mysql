@@ -46,7 +46,28 @@ resource "aws_db_instance" "main" {
   # iam_database_authentication_enabled = var.iam_database_authentication_enabled
 
   # TODO: accept vpc_security_group_ids
-  # vpc_security_group_ids              = compact(concat(aws_security_group.main.*.id, var.vpc_security_group_ids))  
+  # vpc_security_group_ids              = compact(concat(aws_security_group.main.*.id, var.vpc_security_group_ids))
+
+  # option_group_name      = var.option_group_name
+
+  # availability_zone   = var.availability_zone
+  # multi_az            = var.multi_az
+
+  # apply_immediately           = var.apply_immediately
+  # maintenance_window          = var.maintenance_window
+
+  # replicate_source_db     = var.replicate_source_db
+  # replica_mode            = var.replica_mode
+
+  # performance_insights_enabled          = var.performance_insights_enabled
+  # performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
+  # performance_insights_kms_key_id       = var.performance_insights_enabled ? var.performance_insights_kms_key_id : null
+
+  # monitoring_interval     = var.monitoring_interval
+  # monitoring_role_arn     = var.monitoring_interval > 0 ? local.monitoring_role_arn : null
+  # enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
+  # audit, error, general, slowquery
+
 
   vpc_security_group_ids    = [aws_security_group.main.id]
   db_subnet_group_name      = aws_db_subnet_group.main.name
@@ -60,7 +81,7 @@ resource "aws_db_instance" "main" {
 
   # TODO: best way to represent this in the UI?
   # Need time-only widget: https://github.com/rjsf-team/react-jsonschema-form/tree/3ec17f1c0ff40401b7a99c5e9891ac2834a1e73f/packages/core/src/components/widgets
-  # backup_window           = var.backup_window  
+  # backup_window           = var.backup_window
 
   lifecycle {
     ignore_changes = [
@@ -78,7 +99,7 @@ resource "aws_db_subnet_group" "main" {
 resource "aws_kms_key" "mysql_encryption" {
   description             = "MySQL Encryption Key for ${var.md_metadata.name_prefix}"
   deletion_window_in_days = 30
-  # policy                  = data.aws_iam_policy_document.flow_log_encryption_key_policy[each.key].json  
+  # policy                  = data.aws_iam_policy_document.flow_log_encryption_key_policy[each.key].json
   # multi_region = ?
   # enable_key_rotation = ?
 }
