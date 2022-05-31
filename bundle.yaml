@@ -258,7 +258,7 @@ connections:
     - aws_authentication
   properties:
     network:
-      $ref: massdriver/aws-regional-cloud
+      $ref: massdriver/aws-vpc
     aws_authentication:
       $ref: massdriver/aws-iam-role
 
