@@ -6,7 +6,7 @@ locals {
     port     = local.mysql.port
   }
   data_infrastructure = {
-    arn = aws_rds_cluster.main.arn
+    arn = aws_db_instance.main.arn
   }
 
   data_security = {
