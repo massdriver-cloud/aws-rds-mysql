@@ -146,8 +146,3 @@ resource "aws_db_parameter_group" "main" {
     create_before_destroy = true
   }
 }
-
-output "mysql" {
-  value     = aws_db_instance.main
-  sensitive = true
-}

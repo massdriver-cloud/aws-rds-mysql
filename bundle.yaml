@@ -263,7 +263,11 @@ connections:
       $ref: massdriver/aws-iam-role
 
 artifacts:
-  properties: {}
+  required:
+    - authentication
+  properties:
+    authentication:
+      $ref: massdriver/mysql-authentication
 
 ui:
   ui:order:
