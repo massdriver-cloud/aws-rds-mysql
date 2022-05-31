@@ -29,7 +29,7 @@ resource "massdriver_artifact" "authentication" {
   field                = "authentication"
   provider_resource_id = aws_db_instance.main.arn
   type                 = "mysql-authentication"
-  name                 = "MySQL user credentials: ${aws_rds_cluster.main.cluster_identifier}"
+  name                 = "MySQL user credentials: ${aws_db_instance.main.identifier}"
   artifact = jsonencode(
     {
       data = {
