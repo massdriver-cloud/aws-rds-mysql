@@ -18,10 +18,6 @@ jobs:
           repo: "massdriver-cloud/massdriver-cli"
           file: "^mass-.*-linux-amd64\\.tar\\.gz$"
           regex: true
-      - name: Hackerman
-        env:
-          MASSDRIVER_API_KEY: ${{ secrets.MASSDRIVER_API_KEY }}        
-        run: echo what is $MASSDRIVER_API_KEY
 
       - name: Publish
         env:
