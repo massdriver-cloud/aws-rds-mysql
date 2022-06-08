@@ -1,6 +1,7 @@
 # aws-rds-mysql
 
-AWS RDS for MysQL
+MySQL is the world's most popular open source relational database and Amazon RDS makes it easy to set up, operate, and scale MySQL deployments in the cloud. With Amazon RDS, you can deploy scalable MySQL servers in minutes with cost-efficient and resizable hardware capacity.
+
 ## Development
 
 ### Enabling Pre-commit
