@@ -1,4 +1,4 @@
-name: Validate build
+name: Validate on PR
 on:
   pull_request:
     types: [opened]
