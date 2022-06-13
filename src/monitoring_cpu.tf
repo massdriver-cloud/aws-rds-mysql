@@ -28,7 +28,7 @@ module "primary_cpu_utilization" {
 
 module "primary_cpu_credit_balance" {
   source = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=3ec7921"
-  count  = length(regexall("(t2|t3)", var.database.instance_class)) > 0 ? 1 : 0
+  count  = length(regexall("(t2|t3|t4)", var.database.instance_class)) > 0 ? 1 : 0
 
   depends_on = [
     aws_db_instance.main
