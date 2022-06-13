@@ -1,6 +1,10 @@
 locals {
-  freeable_memory_threshold = 256000000
-  swap_usage_threshold      = 256000000
+  freeable_memory_allocated_memory_in_mib   = data.aws_ec2_instance_type.main.memory_size
+  freeable_memory_allocated_memory_in_bytes = local.freeable_memory_allocated_memory_in_mib * 1048576
+  freeable_memory_threshold_percent         = 0.1
+  freeable_memory_threshold                 = local.freeable_memory_threshold_percent * local.freeable_memory_allocated_memory_in_bytes
+
+  swap_usage_threshold = 256000000
 }
 
 module "primary_freeable_memory" {
@@ -11,7 +15,7 @@ module "primary_freeable_memory" {
   ]
 
   md_metadata         = var.md_metadata
-  message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average database freeable memory is below ${local.freeable_memory_threshold} bytes"
+  message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average freeable memory < ${local.freeable_memory_threshold} bytes"
   alarm_name          = "${aws_db_instance.main.identifier}-lowFreeableMemory"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = 1
@@ -34,7 +38,7 @@ module "primary_swap_usage" {
   ]
 
   md_metadata         = var.md_metadata
-  message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average database swap usage is above ${local.swap_usage_threshold} bytes"
+  message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average swap usage > ${local.swap_usage_threshold} bytes"
   alarm_name          = "${aws_db_instance.main.identifier}-highSwapUsage"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
