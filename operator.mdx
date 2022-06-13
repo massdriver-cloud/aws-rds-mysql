@@ -1,10 +1,7 @@
-# {{ .Name }} Operator Guide
-
-This is the guide for your bundle. It will appear under the `guide` button in Massdriver.
-
-Use it to describe to users how the bundle works, use cases for the bundle, and event examples.
+# AWS RDS MySQL Operator Guide
 
 Decisions:
+
 * A 10 character password is automatically generated for your root account
 * Auto minor version upgrade enabled
 * Auto major version upgrade disabled
@@ -15,51 +12,11 @@ Decisions:
 * a subnet group is created for the database
 * a security group is created for the database
 * some instance types (e.g: db.t2.micro) aren't supported since they do not support encryption
-
-<!-- We may want to polish this for template before releasing --> 
-
-## TODO:
-
-* [ ] Write a design doc / operator guide
-* [ ] Write bundle code
-  * [ ] Defing params & connections JSON schema
-  * [ ] Write 2-3 Guided Configs
-  * [ ] Define artifact schema, design new artifact definitions if necessary
-  * [ ] Test each guided config
-  * [ ] View params schema in storybook, [write UI schema](https://react-jsonschema-form.readthedocs.io/en/latest/usage/widgets/) for sorting fields, etc
-* [ ] Write user guide
-* [ ] Remove this TODO block
-
-_Brief description of bundle from an operator's point of view_
-
-## Use Cases
-
-_Common use cases for this bundle_
-
-### Guided Configs
-
-_Describe the guided configs_
-
-## Design
-
-### How It Works
-
-_Describe how it works_
-
-#### Best Practices
-
-#### Security 
-
-#### Auditing
-
-#### Compliance
-
-#### Observability
-
-### Trade-offs
-
-_List trade offs made with this bundle_
-
-### Permissions
-
-_list IAM permissions required on this bundle._
+* monitoring
+  * cpu_utilization_threshold    = 90
+  * cpu_credit_balance_threshold = 100
+  * disk_queue_depth_threshold   = 64
+  * free_storage_space_threshold = 10000000000
+  * burst_balance_threshold      = 100
+  * freeable_memory_threshold = 256000000
+  * swap_usage_threshold      = 256000000
