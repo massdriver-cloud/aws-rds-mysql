@@ -11,7 +11,7 @@ module "primary_cpu_utilization" {
   ]
 
   md_metadata         = var.md_metadata
-  message             = "RDS MySQL ${aws_db_instance.main.identifier}: CPU Utilization > ${local.cpu_utilization_threshold}% of Max"
+  message             = "RDS MySQL ${aws_db_instance.main.identifier}:  AverageCPU Utilization > ${local.cpu_utilization_threshold}%"
   alarm_name          = "${aws_db_instance.main.identifier}-highCPUUtilization"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1
@@ -35,7 +35,7 @@ module "primary_cpu_credit_balance" {
   ]
 
   md_metadata         = var.md_metadata
-  message             = "RDS MySQL ${aws_db_instance.main.identifier}: CPU Credit Balance is below ${local.cpu_credit_balance_threshold}"
+  message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average CPU Credit Balance < ${local.cpu_credit_balance_threshold}"
   alarm_name          = "${aws_db_instance.main.identifier}-lowCPUCreditBalance"
   comparison_operator = "LessThanThreshold"
   evaluation_periods  = 1

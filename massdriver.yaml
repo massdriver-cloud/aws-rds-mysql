@@ -223,14 +223,14 @@ params:
       properties:
         allocated:
           title: Allocated Storage
-          description: The allocated storage in gigabytes.
+          description: The allocated storage in GiB.
           type: integer
           minimum: 100
           default: 100
           maximum: 65536
         max_allocated:
           title: Max Allocated Storage
-          description: The max allocated storage in gigabytes that RDS will autoscale to. Not supported on all instance types. Set to greater than `allocated_storage` to enable.
+          description: The max allocated storage in GiB that RDS will autoscale to. Not supported on all instance types. Set to greater than `allocated_storage` to enable.
           type: integer
           minimum: 0
           default: 0

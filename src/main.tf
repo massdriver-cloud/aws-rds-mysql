@@ -17,6 +17,9 @@ resource "random_password" "root_password" {
 resource "random_id" "snapshot_identifier" {
   byte_length = 4
 }
+data "aws_ec2_instance_type" "main" {
+  instance_type = var.database.instance_class
+}
 
 resource "aws_db_instance" "main" {
   identifier                  = var.md_metadata.name_prefix
