@@ -1,6 +1,6 @@
 locals {
-  instance_memory_size_in_mib   = data.aws_ec2_instance_type.main.memory_size
-  instance_memory_size_in_bytes = local.instance_memory_size_in_mib * 1048576
+  instance_memory_size_in_gib   = local.instance_memory_map[var.database.instance_class]
+  instance_memory_size_in_bytes = local.instance_memory_size_in_gib * 1073741824
 
   freeable_memory_threshold_percent = 0.1
   freeable_memory_threshold         = local.freeable_memory_threshold_percent * local.instance_memory_size_in_bytes
