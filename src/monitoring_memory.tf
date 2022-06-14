@@ -1,10 +1,12 @@
 locals {
-  freeable_memory_allocated_memory_in_mib   = data.aws_ec2_instance_type.main.memory_size
-  freeable_memory_allocated_memory_in_bytes = local.freeable_memory_allocated_memory_in_mib * 1048576
-  freeable_memory_threshold_percent         = 0.1
-  freeable_memory_threshold                 = local.freeable_memory_threshold_percent * local.freeable_memory_allocated_memory_in_bytes
+  instance_memory_size_in_mib   = data.aws_ec2_instance_type.main.memory_size
+  instance_memory_size_in_bytes = local.instance_memory_size_in_mib * 1048576
 
-  swap_usage_threshold = 256000000
+  freeable_memory_threshold_percent = 0.1
+  freeable_memory_threshold         = local.freeable_memory_threshold_percent * local.instance_memory_size_in_bytes
+
+  swap_usage_threshold_percent = 0.1
+  swap_usage_threshold         = local.swap_usage_threshold_percent * local.instance_memory_size_in_bytes
 }
 
 module "primary_freeable_memory" {

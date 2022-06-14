@@ -2,10 +2,11 @@ locals {
   burst_balance_threshold    = 100
   disk_queue_depth_threshold = 64
 
-  free_storage_space_allocated_storage_in_gib   = var.storage.max_allocated > 0 ? var.storage.max_allocated : var.storage.allocated
-  free_storage_space_allocated_storage_in_bytes = local.free_storage_space_allocated_storage_in_gib * 1073741824
-  free_storage_space_threshold_percent          = 0.1
-  free_storage_space_threshold                  = local.free_storage_space_threshold_percent * local.free_storage_space_allocated_storage_in_bytes
+  instance_allocated_storage_in_gib   = var.storage.max_allocated > 0 ? var.storage.max_allocated : var.storage.allocated
+  instance_allocated_storage_in_bytes = local.instance_allocated_storage_in_gib * 1073741824
+
+  free_storage_space_threshold_percent = 0.1
+  free_storage_space_threshold         = local.free_storage_space_threshold_percent * local.instance_allocated_storage_in_bytes
 }
 
 module "primary_disk_queue_depth" {
