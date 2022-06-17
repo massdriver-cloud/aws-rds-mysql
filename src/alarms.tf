@@ -10,13 +10,14 @@ locals {
 }
 
 module "primary_cpu_utilization" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
   sns_topic_arn = module.alarm_channel.arn
   depends_on = [
     aws_db_instance.main
   ]
 
   md_metadata         = var.md_metadata
+  display_name        = "Primary CPU Utilization"
   message             = "RDS MySQL ${aws_db_instance.main.identifier}:  AverageCPU Utilization > ${local.cpu_utilization_threshold}%"
   alarm_name          = "${aws_db_instance.main.identifier}-highCPUUtilization"
   comparison_operator = "GreaterThanThreshold"
@@ -70,13 +71,14 @@ locals {
 }
 
 module "primary_disk_queue_depth" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
   sns_topic_arn = module.alarm_channel.arn
   depends_on = [
     aws_db_instance.main
   ]
 
   md_metadata         = var.md_metadata
+  display_name        = "Primary Disk Queue Depth"
   message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average disk queue depth > ${local.disk_queue_depth_threshold}"
   alarm_name          = "${aws_db_instance.main.identifier}-highDiskQueueDepth"
   comparison_operator = "GreaterThanThreshold"
@@ -93,13 +95,14 @@ module "primary_disk_queue_depth" {
 }
 
 module "primary_free_storage_space" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
   sns_topic_arn = module.alarm_channel.arn
   depends_on = [
     aws_db_instance.main
   ]
 
   md_metadata         = var.md_metadata
+  display_name        = "Primary Free Storage Space"
   message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average free storage space < ${local.free_storage_space_threshold} bytes"
   alarm_name          = "${aws_db_instance.main.identifier}-lowFreeStorageSpace"
   comparison_operator = "LessThanThreshold"
@@ -153,13 +156,14 @@ locals {
 }
 
 module "primary_freeable_memory" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
   sns_topic_arn = module.alarm_channel.arn
   depends_on = [
     aws_db_instance.main
   ]
 
   md_metadata         = var.md_metadata
+  display_name        = "Primary Freeable Memory"
   message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average freeable memory < ${local.freeable_memory_threshold} bytes"
   alarm_name          = "${aws_db_instance.main.identifier}-lowFreeableMemory"
   comparison_operator = "LessThanThreshold"
@@ -176,13 +180,14 @@ module "primary_freeable_memory" {
 }
 
 module "primary_swap_usage" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
   sns_topic_arn = module.alarm_channel.arn
   depends_on = [
     aws_db_instance.main
   ]
 
   md_metadata         = var.md_metadata
+  display_name        = "Primary Swap Usage"
   message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average swap usage > ${local.swap_usage_threshold} bytes"
   alarm_name          = "${aws_db_instance.main.identifier}-highSwapUsage"
   comparison_operator = "GreaterThanThreshold"
