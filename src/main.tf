@@ -7,6 +7,11 @@ locals {
 
   paramter_group_family = "mysql${var.database.engine_version}"
   parameters            = (var.parameters == null ? [] : var.parameters)
+
+  subnet_ids = {
+    "internal" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
+    "private" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
+  }
 }
 
 resource "random_password" "root_password" {
@@ -93,7 +98,7 @@ resource "aws_db_instance" "main" {
 resource "aws_db_subnet_group" "main" {
   name        = var.md_metadata.name_prefix
   description = "For RDS MySQL cluster ${var.md_metadata.name_prefix}"
-  subnet_ids  = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
+  subnet_ids  = local.subnet_ids[var.networking.subnet_type]
 }
 
 resource "aws_kms_key" "mysql_encryption" {
@@ -117,7 +122,7 @@ resource "aws_security_group" "main" {
 
 # TODO: Remove this once we have application bundles working.
 resource "aws_security_group_rule" "vpc_ingress" {
-  count       = var.networking.allow_vpc_access ? 1 : 0
+  count       = 1
   description = "From allowed CIDRs"
   type        = "ingress"
   from_port   = local.mysql.port

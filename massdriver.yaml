@@ -47,11 +47,12 @@ params:
       title: Networking
       type: object
       properties:
-        allow_vpc_access:
-          title: Allow VPC Access
-          description: Allow the entire VPC to access the RDS database.
-          type: boolean
-          default: true
+        subnet_type:
+          title: Subnet Type
+          description: Deploy the database to internal subnets (cannot reach the internet) or private subnets (internet egress traffic allowed)
+          type: string
+          enum: [internal, private]
+          default: internal
 
     parameters:
       title: Database Parameters
@@ -277,4 +278,4 @@ ui:
   backup:
     ui:order: [retention_period, delete_automated_backups, skip_final_snapshot]
   networking:
-    ui:order: [allow_vpc_access]
+    ui:order: [subnet_type]
