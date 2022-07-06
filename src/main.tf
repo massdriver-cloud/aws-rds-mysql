@@ -6,7 +6,7 @@ locals {
   }
 
   paramter_group_family = "mysql${var.database.engine_version}"
-  parameters            = (var.parameters == null ? [] : var.parameters)
+  parameters            = (var.database.parameters == null ? [] : var.database.parameters)
 
   subnet_ids = {
     "internal" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
