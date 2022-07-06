@@ -1,4 +1,4 @@
-name: Publish to Massdriver (beta) - testing overwrite
+name: Publish to Massdriver (beta)
 on:
   push:
     branches:
