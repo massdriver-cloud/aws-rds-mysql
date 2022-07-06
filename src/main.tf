@@ -41,7 +41,7 @@ resource "aws_db_instance" "main" {
   max_allocated_storage = var.storage.max_allocated
   storage_type          = var.storage.type
 
-  # We have a note in the UI that `iops` is only applied if the storage type is `iops`
+  # We have a note in the UI that `iops` is only applied if the storage type is `io1`
   iops = var.storage.type == "io1" ? lookup(var.storage, "iops", null) : null
 
   # TODO: disk encryption if storage_encrypted is set to true and a kms key is used, will it use the kms key
