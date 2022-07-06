@@ -1,8 +1,14 @@
 # AWS RDS MySQL Operator Guide
 
-Decisions:
+Configuration Presets:
 
-* A 10 character password is automatically generated for your root account
+* Development - MySQL 8 on 2 vCPUs, 4 GiB RAM, 100GiB SSD Disk. No deletion protection, single day backups est cost $51/mo
+
+* Production - MySQL 8 on 8 vCPUs, 64 GiB RAM, 100GiB IO1 w/ disk allocation scaling to 1000GiB w/ 2000 IOPS. Deletion protection, 30 day backups and snapshots
+
+Design Decisions:
+
+* A 10 character password is automatically generated for your "root" account
 * Auto minor version upgrade enabled
 * Auto major version upgrade disabled
 * A default database _is not created_
@@ -14,9 +20,7 @@ Decisions:
 * some instance types (e.g: db.t2.micro) aren't supported since they do not support encryption
 * monitoring
   * cpu_utilization_threshold    = > 90%
-  * cpu_credit_balance_threshold = 100
   * disk_queue_depth_threshold   = 64
   * free_storage_space_threshold = < 10% of allocated or max allocated (if set)
-  * burst_balance_threshold      = 100
   * freeable_memory_threshold = < 10% of instance
   * swap_usage_threshold      = > 10% of instance  memory
