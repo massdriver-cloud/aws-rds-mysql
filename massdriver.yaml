@@ -85,28 +85,6 @@ params:
           enum: [internal, private]
           default: internal
 
-    parameters:
-      title: Database Parameters
-      # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.MySQL.Parameters.html
-      type: array
-      default: []
-      items:
-        type: object
-        required:
-          - name
-          - value
-        properties:
-          name:
-            type: string
-          value:
-            type: string
-          apply_method:
-            type: string
-            default: immediate
-            enum:
-              - immediate
-              - pending-reboot
-
     database:
       title: Database
       type: object
@@ -115,6 +93,27 @@ params:
         - engine_version
         - instance_class
       properties:
+        parameters:
+          title: Database Parameters
+          # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.MySQL.Parameters.html
+          type: array
+          default: []
+          items:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+              value:
+                type: string
+              apply_method:
+                type: string
+                default: immediate
+                enum:
+                  - immediate
+                  - pending-reboot
         deletion_protection:
           title: Deletion Protection
           description: If the DB instance should have deletion protection enabled.
@@ -403,9 +402,14 @@ artifacts:
       $ref: massdriver/mysql-authentication
 
 ui:
-  ui:order: [database, storage, backup, networking, parameters, "*"]
+  ui:order: [database, storage, backup, networking, "*"]
   database:
-    ui:order: [engine_version, instance_class, username, deletion_protection]
+    ui:order:
+      - engine_version
+      - instance_class
+      - username
+      - deletion_protection
+      - parameters
   storage:
     ui:order: [type, iops, allocated, max_allocated]
   backup:
