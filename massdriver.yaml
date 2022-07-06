@@ -11,8 +11,39 @@ steps:
 
 params:
   examples:
-    - __name: Development
-    - __name: Production
+    - __name: "Development (Est. Cost: $51/mo)"
+      database:
+        deletion_protection: false
+        username: root
+        engine_version: "8.0"
+        instance_class: db.t3.medium
+      networking:
+        subnet_type: internal
+      storage:
+        allocated: 100
+        max_allocated: 0
+        type: gp2
+      backup:
+        retention_period: 1
+        delete_automated_backups: true
+        skip_final_snapshot: true
+    - __name: "Production (Est. Cost: $881/mo)"
+      database:
+        deletion_protection: true
+        username: root
+        engine_version: "8.0"
+        instance_class: db.r5b.2xlarge
+      networking:
+        subnet_type: internal
+      storage:
+        allocated: 100
+        max_allocated: 1000
+        type: io1
+        iops: 3000
+      backup:
+        retention_period: 30
+        delete_automated_backups: false
+        skip_final_snapshot: false
   required:
     - database
     - networking
@@ -106,113 +137,215 @@ params:
             - "5.7"
             - "8.0"
         instance_class:
-          title: Instance Class
+          title: Instance Type
           description: The instance type of the RDS instance.
-          type: string
           default: db.t3.medium
-          enum:
-            - db.m3.2xlarge
-            - db.m3.large
-            - db.m3.medium
-            - db.m3.xlarge
-            - db.m4.10xlarge
-            - db.m4.16xlarge
-            - db.m4.2xlarge
-            - db.m4.4xlarge
-            - db.m4.large
-            - db.m4.xlarge
-            - db.m5.12xlarge
-            - db.m5.16xlarge
-            - db.m5.24xlarge
-            - db.m5.2xlarge
-            - db.m5.4xlarge
-            - db.m5.8xlarge
-            - db.m5.large
-            - db.m5.xlarge
-            - db.m6g.12xlarge
-            - db.m6g.16xlarge
-            - db.m6g.2xlarge
-            - db.m6g.4xlarge
-            - db.m6g.8xlarge
-            - db.m6g.large
-            - db.m6g.xlarge
-            - db.m6i.12xlarge
-            - db.m6i.16xlarge
-            - db.m6i.24xlarge
-            - db.m6i.2xlarge
-            - db.m6i.32xlarge
-            - db.m6i.4xlarge
-            - db.m6i.8xlarge
-            - db.m6i.large
-            - db.m6i.xlarge
-            - db.r3.2xlarge
-            - db.r3.4xlarge
-            - db.r3.8xlarge
-            - db.r3.large
-            - db.r3.xlarge
-            - db.r4.16xlarge
-            - db.r4.2xlarge
-            - db.r4.4xlarge
-            - db.r4.8xlarge
-            - db.r4.large
-            - db.r4.xlarge
-            - db.r5.12xlarge
-            - db.r5.16xlarge
-            - db.r5.24xlarge
-            - db.r5.2xlarge
-            - db.r5.4xlarge
-            - db.r5.8xlarge
-            - db.r5b.12xlarge
-            - db.r5b.16xlarge
-            - db.r5b.24xlarge
-            - db.r5b.2xlarge
-            - db.r5b.4xlarge
-            - db.r5b.8xlarge
-            - db.r5b.large
-            - db.r5b.xlarge
-            - db.r5.large
-            - db.r5.xlarge
-            - db.r6g.12xlarge
-            - db.r6g.16xlarge
-            - db.r6g.2xlarge
-            - db.r6g.4xlarge
-            - db.r6g.8xlarge
-            - db.r6g.large
-            - db.r6g.xlarge
-            - db.r6i.12xlarge
-            - db.r6i.16xlarge
-            - db.r6i.24xlarge
-            - db.r6i.2xlarge
-            - db.r6i.32xlarge
-            - db.r6i.4xlarge
-            - db.r6i.8xlarge
-            - db.r6i.large
-            - db.r6i.xlarge
-            - db.t2.2xlarge
-            - db.t2.large
-            - db.t2.medium
-            - db.t2.micro
-            - db.t2.small
-            - db.t2.xlarge
-            - db.t3.2xlarge
-            - db.t3.large
-            - db.t3.medium
-            - db.t3.micro
-            - db.t3.small
-            - db.t3.xlarge
-            - db.t4g.2xlarge
-            - db.t4g.large
-            - db.t4g.medium
-            - db.t4g.micro
-            - db.t4g.small
-            - db.t4g.xlarge
-            - db.x2g.12xlarge
-            - db.x2g.16xlarge
-            - db.x2g.2xlarge
-            - db.x2g.4xlarge
-            - db.x2g.8xlarge
-            - db.x2g.large
-            - db.x2g.xlarge
+          type: string
+          oneOf:
+            - title: M3 General Purpose Double Extra Large (8 vCPUs, 30 GiB)
+              const: db.m3.2xlarge
+            - title: M3 General Purpose Large (2 vCPUs, 7.5 GiB)
+              const: db.m3.large
+            - title: M3 General Purpose Medium (1 vCPUs, 3.75 GiB)
+              const: db.m3.medium
+            - title: M3 General Purpose Extra Large (4 vCPUs, 15 GiB)
+              const: db.m3.xlarge
+            - title: M4 General Purpose Deca Extra Large (40 vCPUs, 160 GiB)
+              const: db.m4.10xlarge
+            - title: M4 General Purpose 16xlarge (64 vCPUs, 256 GiB)
+              const: db.m4.16xlarge
+            - title: M4 General Purpose Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.m4.2xlarge
+            - title: M4 General Purpose Quadruple Extra Large (16 vCPUs, 64 GiB)
+              const: db.m4.4xlarge
+            - title: M4 General Purpose Large (2 vCPUs, 8 GiB)
+              const: db.m4.large
+            - title: M4 General Purpose Extra Large (4 vCPUs, 16 GiB)
+              const: db.m4.xlarge
+            - title: M5 12xlarge (48 vCPUs, 192 GiB)
+              const: db.m5.12xlarge
+            - title: M5 16xlarge (64 vCPUs, 256 GiB)
+              const: db.m5.16xlarge
+            - title: M5 24xlarge (96 vCPUs, 384 GiB)
+              const: db.m5.24xlarge
+            - title: M5 Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.m5.2xlarge
+            - title: M5 Quadruple Extra Large (16 vCPUs, 64 GiB)
+              const: db.m5.4xlarge
+            - title: M5 Eight Extra Large (32 vCPUs, 128 GiB)
+              const: db.m5.8xlarge
+            - title: M5 Large (2 vCPUs, 8 GiB)
+              const: db.m5.large
+            - title: M5 Extra Large (4 vCPUs, 16 GiB)
+              const: db.m5.xlarge
+            - title: M6G 12xlarge (48 vCPUs, 192 GiB)
+              const: db.m6g.12xlarge
+            - title: M6G 16xlarge (64 vCPUs, 256 GiB)
+              const: db.m6g.16xlarge
+            - title: M6G Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.m6g.2xlarge
+            - title: M6G Quadruple Extra Large (16 vCPUs, 64 GiB)
+              const: db.m6g.4xlarge
+            - title: M6G Eight Extra Large (32 vCPUs, 128 GiB)
+              const: db.m6g.8xlarge
+            - title: M6G Large (2 vCPUs, 8 GiB)
+              const: db.m6g.large
+            - title: M6G Extra Large (4 vCPUs, 16 GiB)
+              const: db.m6g.xlarge
+            - title: M6I 12xlarge (48 vCPUs, 192 GiB)
+              const: db.m6i.12xlarge
+            - title: M6I 16xlarge (64 vCPUs, 256 GiB)
+              const: db.m6i.16xlarge
+            - title: M6I 24xlarge (96 vCPUs, 384 GiB)
+              const: db.m6i.24xlarge
+            - title: M6I Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.m6i.2xlarge
+            - title: M6I 32xlarge (128 vCPUs, 512 GiB)
+              const: db.m6i.32xlarge
+            - title: M6I Quadruple Extra Large (16 vCPUs, 64 GiB)
+              const: db.m6i.4xlarge
+            - title: M6I Eight Extra Large (32 vCPUs, 128 GiB)
+              const: db.m6i.8xlarge
+            - title: M6I Large (2 vCPUs, 8 GiB)
+              const: db.m6i.large
+            - title: M6I Extra Large (4 vCPUs, 16 GiB)
+              const: db.m6i.xlarge
+            - title: R3 Memory Optimized Double Extra Large (8 vCPUs, 61 GiB)
+              const: db.r3.2xlarge
+            - title: R3 Memory Optimized Quadruple Extra Large (16 vCPUs, 122 GiB)
+              const: db.r3.4xlarge
+            - title: R3 Memory Optimized Eight Extra Large (32 vCPUs, 244 GiB)
+              const: db.r3.8xlarge
+            - title: R3 Memory Optimized Large (2 vCPUs, 15.25 GiB)
+              const: db.r3.large
+            - title: R3 Memory Optimized Extra Large (4 vCPUs, 30.5 GiB)
+              const: db.r3.xlarge
+            - title: R4 Memory Optimized 16xlarge (64 vCPUs, 488 GiB)
+              const: db.r4.16xlarge
+            - title: R4 Memory Optimized Double Extra Large (8 vCPUs, 61 GiB)
+              const: db.r4.2xlarge
+            - title: R4 Memory Optimized Quadruple Extra Large (16 vCPUs, 122 GiB)
+              const: db.r4.4xlarge
+            - title: R4 Memory Optimized Eight Extra Large (32 vCPUs, 244 GiB)
+              const: db.r4.8xlarge
+            - title: R4 Memory Optimized Large (2 vCPUs, 15.25 GiB)
+              const: db.r4.large
+            - title: R4 Memory Optimized Extra Large (4 vCPUs, 30.5 GiB)
+              const: db.r4.xlarge
+            - title: R5 12xlarge (48 vCPUs, 384 GiB)
+              const: db.r5.12xlarge
+            - title: R5 16xlarge (64 vCPUs, 512 GiB)
+              const: db.r5.16xlarge
+            - title: R5 24xlarge (96 vCPUs, 768 GiB)
+              const: db.r5.24xlarge
+            - title: R5 Double Extra Large (8 vCPUs, 64 GiB)
+              const: db.r5.2xlarge
+            - title: R5 Quadruple Extra Large (16 vCPUs, 128 GiB)
+              const: db.r5.4xlarge
+            - title: R5 Eight Extra Large (32 vCPUs, 256 GiB)
+              const: db.r5.8xlarge
+            - title: R5B 12xlarge (48 vCPUs, 384 GiB)
+              const: db.r5b.12xlarge
+            - title: R5B 16xlarge (64 vCPUs, 512 GiB)
+              const: db.r5b.16xlarge
+            - title: R5B 24xlarge (96 vCPUs, 768 GiB)
+              const: db.r5b.24xlarge
+            - title: R5B Double Extra Large (8 vCPUs, 64 GiB)
+              const: db.r5b.2xlarge
+            - title: R5B Quadruple Extra Large (16 vCPUs, 128 GiB)
+              const: db.r5b.4xlarge
+            - title: R5B Eight Extra Large (32 vCPUs, 256 GiB)
+              const: db.r5b.8xlarge
+            - title: R5B Large (2 vCPUs, 16 GiB)
+              const: db.r5b.large
+            - title: R5B Extra Large (4 vCPUs, 32 GiB)
+              const: db.r5b.xlarge
+            - title: R5 Large (2 vCPUs, 16 GiB)
+              const: db.r5.large
+            - title: R5 Extra Large (4 vCPUs, 32 GiB)
+              const: db.r5.xlarge
+            - title: R6G 12xlarge (48 vCPUs, 384 GiB)
+              const: db.r6g.12xlarge
+            - title: R6G 16xlarge (64 vCPUs, 512 GiB)
+              const: db.r6g.16xlarge
+            - title: R6G Double Extra Large (8 vCPUs, 64 GiB)
+              const: db.r6g.2xlarge
+            - title: R6G Quadruple Extra Large (16 vCPUs, 128 GiB)
+              const: db.r6g.4xlarge
+            - title: R6G Eight Extra Large (32 vCPUs, 256 GiB)
+              const: db.r6g.8xlarge
+            - title: R6G Large (2 vCPUs, 16 GiB)
+              const: db.r6g.large
+            - title: R6G Extra Large (4 vCPUs, 32 GiB)
+              const: db.r6g.xlarge
+            - title: R6I 12xlarge (48 vCPUs, 384 GiB)
+              const: db.r6i.12xlarge
+            - title: R6I 16xlarge (64 vCPUs, 512 GiB)
+              const: db.r6i.16xlarge
+            - title: R6I 24xlarge (96 vCPUs, 768 GiB)
+              const: db.r6i.24xlarge
+            - title: R6I Double Extra Large (8 vCPUs, 64 GiB)
+              const: db.r6i.2xlarge
+            - title: R6I 32xlarge (128 vCPUs, 1024 GiB)
+              const: db.r6i.32xlarge
+            - title: R6I Quadruple Extra Large (16 vCPUs, 128 GiB)
+              const: db.r6i.4xlarge
+            - title: R6I Eight Extra Large (32 vCPUs, 256 GiB)
+              const: db.r6i.8xlarge
+            - title: R6I Large (2 vCPUs, 16 GiB)
+              const: db.r6i.large
+            - title: R6I Extra Large (4 vCPUs, 32 GiB)
+              const: db.r6i.xlarge
+            - title: T2 General Purpose Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.t2.2xlarge
+            - title: T2 General Purpose Large (2 vCPUs, 8 GiB)
+              const: db.t2.large
+            - title: T2 General Purpose Medium (2 vCPUs, 4 GiB)
+              const: db.t2.medium
+            - title: T2 General Purpose Micro (1 vCPUs, 1 GiB)
+              const: db.t2.micro
+            - title: T2 General Purpose Small (1 vCPUs, 2 GiB)
+              const: db.t2.small
+            - title: T2 General Purpose Extra Large (4 vCPUs, 16 GiB)
+              const: db.t2.xlarge
+            - title: T3 Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.t3.2xlarge
+            - title: T3 Large (2 vCPUs, 8 GiB)
+              const: db.t3.large
+            - title: T3 Medium (2 vCPUs, 4 GiB)
+              const: db.t3.medium
+            - title: T3 Micro (2 vCPUs, 1 GiB)
+              const: db.t3.micro
+            - title: T3 Small (2 vCPUs, 2 GiB)
+              const: db.t3.small
+            - title: T3 Extra Large (4 vCPUs, 16 GiB)
+              const: db.t3.xlarge
+            - title: T4G Double Extra Large (8 vCPUs, 32 GiB)
+              const: db.t4g.2xlarge
+            - title: T4G Large (2 vCPUs, 8 GiB)
+              const: db.t4g.large
+            - title: T4G Medium (2 vCPUs, 4 GiB)
+              const: db.t4g.medium
+            - title: T4G Micro (2 vCPUs, 1 GiB)
+              const: db.t4g.micro
+            - title: T4G Small (2 vCPUs, 2 GiB)
+              const: db.t4g.small
+            - title: T4G Extra Large (4 vCPUs, 16 GiB)
+              const: db.t4g.xlarge
+            - title: X2G 12xlarge (48 vCPUs, 768 GiB)
+              const: db.x2g.12xlarge
+            - title: X2G 16xlarge (64 vCPUs, 1024 GiB)
+              const: db.x2g.16xlarge
+            - title: X2G Double Extra Large (8 vCPUs, 128 GiB)
+              const: db.x2g.2xlarge
+            - title: X2G Quadruple Extra Large (16 vCPUs, 256 GiB)
+              const: db.x2g.4xlarge
+            - title: X2G Eight Extra Large (32 vCPUs, 512 GiB)
+              const: db.x2g.8xlarge
+            - title: X2G Large (2 vCPUs, 32 GiB)
+              const: db.x2g.large
+            - title: X2G Extra Large (4 vCPUs, 64 GiB)
+              const: db.x2g.xlarge
 
     storage:
       title: Storage
@@ -247,7 +380,7 @@ params:
             - io1
         iops:
           title: IOPS
-          description: The amount of provisioned IOPS.
+          description: The amount of provisioned IOPS. Only applies if `type` is `io1`.
           type: integer
           minimum: 1000
           max: 256000

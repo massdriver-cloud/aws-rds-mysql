@@ -33,31 +33,6 @@ module "primary_cpu_utilization" {
   }
 }
 
-# Removing temporarily
-# module "primary_cpu_credit_balance" {
-#   source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
-#   count         = length(regexall("(t2|t3|t4)", var.database.instance_class)) > 0 ? 1 : 0
-#   sns_topic_arn = module.alarm_channel.arn
-#   depends_on = [
-#     aws_db_instance.main
-#   ]
-
-#   md_metadata         = var.md_metadata
-#   message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average CPU Credit Balance < ${local.cpu_credit_balance_threshold}"
-#   alarm_name          = "${aws_db_instance.main.identifier}-lowCPUCreditBalance"
-#   comparison_operator = "LessThanThreshold"
-#   evaluation_periods  = 1
-#   metric_name         = "CPUCreditBalance"
-#   namespace           = "AWS/RDS"
-#   period              = 300
-#   statistic           = "Average"
-#   threshold           = local.cpu_credit_balance_threshold
-
-#   dimensions = {
-#     DBInstanceIdentifier = aws_db_instance.main.id
-#   }
-# }
-
 // Disk
 locals {
   burst_balance_threshold    = 100
@@ -117,31 +92,6 @@ module "primary_free_storage_space" {
     DBInstanceIdentifier = aws_db_instance.main.id
   }
 }
-
-# Removing temporarily
-#
-# module "primary_burst_balance" {
-#   source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=aa08797"
-#   sns_topic_arn = module.alarm_channel.arn
-#   depends_on = [
-#     aws_db_instance.main
-#   ]
-
-#   md_metadata         = var.md_metadata
-#   message             = "RDS MySQL ${aws_db_instance.main.identifier}: Average EBS Burst balance < ${local.burst_balance_threshold}"
-#   alarm_name          = "${aws_db_instance.main.identifier}-lowEBSBurstBalance"
-#   comparison_operator = "LessThanThreshold"
-#   evaluation_periods  = 1
-#   metric_name         = "BurstBalance"
-#   namespace           = "AWS/RDS"
-#   period              = 300
-#   statistic           = "Average"
-#   threshold           = local.burst_balance_threshold
-
-#   dimensions = {
-#     DBInstanceIdentifier = aws_db_instance.main.id
-#   }
-# }
 
 // Memory
 locals {

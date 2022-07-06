@@ -10,7 +10,7 @@ locals {
 
   subnet_ids = {
     "internal" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
-    "private" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
+    "private"  = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
   }
 }
 
@@ -40,7 +40,9 @@ resource "aws_db_instance" "main" {
   allocated_storage     = var.storage.allocated
   max_allocated_storage = var.storage.max_allocated
   storage_type          = var.storage.type
-  iops                  = lookup(var.storage, "iops", null)
+
+  # We have a note in the UI that `iops` is only applied if the storage type is `iops`
+  iops = lookup(var.storage, "iops", null)
 
   # TODO: disk encryption if storage_encrypted is set to true and a kms key is used, will it use the kms key
   # is this field even needed then?
@@ -72,7 +74,6 @@ resource "aws_db_instance" "main" {
   # monitoring_role_arn     = var.monitoring_interval > 0 ? local.monitoring_role_arn : null
   # enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   # audit, error, general, slowquery
-
 
   vpc_security_group_ids    = [aws_security_group.main.id]
   db_subnet_group_name      = aws_db_subnet_group.main.name
