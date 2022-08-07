@@ -5,10 +5,6 @@ ref: github.com/massdriver-cloud/aws-rds-mysql
 access: "public"
 type: "bundle"
 
-steps:
-  - path: src
-    provisioner: terraform
-
 params:
   examples:
     - __name: "Development (Est. Cost: $51/mo)"
@@ -27,6 +23,8 @@ params:
         retention_period: 1
         delete_automated_backups: true
         skip_final_snapshot: true
+      observability:
+        enhanced_monitoring_interval: 0
     - __name: "Production (Est. Cost: $881/mo)"
       database:
         deletion_protection: true
@@ -44,11 +42,14 @@ params:
         retention_period: 30
         delete_automated_backups: false
         skip_final_snapshot: false
+      observability:
+        enhanced_monitoring_interval: 30
   required:
     - database
     - networking
     - storage
     - backup
+    - observability
   properties:
     backup:
       title: Backup
@@ -373,16 +374,45 @@ params:
           description: One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). The default is 'io1' if iops is specified, 'gp2' if not.
           type: string
           default: gp2
-          enum:
-            - standard
-            - gp2
-            - io1
+          oneOf:
+            - title: SSD
+              const: gp2
+            - title: Provisioned IOPS
+              const: io1
+            - title: Magnetic
+              const: standard
         iops:
           title: IOPS
           description: The amount of provisioned IOPS. Only applies if `type` is `io1`.
           type: integer
           minimum: 1000
           max: 256000
+
+    observability:
+      title: Observability
+      type: object
+      description: Advanced logging and monitoring options.
+      properties:
+        enhanced_monitoring_interval:
+          title: Enhanced Monitoring
+          description: Monitoring interval for operating system metrics of your DB instance in real time. When you want to see how different processes or threads use the CPU, Enhanced Monitoring metrics are useful.
+          type: integer
+          default: 0
+          oneOf:
+            - title: Disabled
+              const: 0
+            - title: 1 second
+              const: 1
+            - title: 5 seconds
+              const: 5
+            - title: 10 seconds
+              const: 10
+            - title: 15 seconds
+              const: 15
+            - title: 30 seconds
+              const: 30
+            - title: 60 seconds
+              const: 60
 
 connections:
   required:
@@ -402,7 +432,7 @@ artifacts:
       $ref: massdriver/mysql-authentication
 
 ui:
-  ui:order: [database, storage, backup, networking, "*"]
+  ui:order: [database, storage, backup, observability, networking, "*"]
   database:
     ui:order:
       - engine_version
@@ -416,3 +446,5 @@ ui:
     ui:order: [retention_period, delete_automated_backups, skip_final_snapshot]
   networking:
     ui:order: [subnet_type]
+  observability:
+    ui:order: [enhanced_monitoring_interval]

@@ -1,17 +1,13 @@
-.PHONY: build
-build:
-	mass bundle build bundle.yaml
-	
 .PHONY: plan
-plan: build
-	cd ./src && terraform plan -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tfvars.json
 
-.PHONY: apply
-apply: build
-	cd ./src && terraform apply -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tfvars.json
+plan: ## Plans all examples
+	mass bundle build
+	ruby ./tf_helper.rb plan | bash
 
-destroy: build
-	cd ./src && terraform destroy -var-file=./dev.connections.tfvars.json -var-file=./dev.params.tfvars.json
+apply: ## Applies all examples
+	mass bundle build
+	ruby ./tf_helper.rb apply | bash
 
-dev.validate: build
-	mass schema validate -s ./schema-params.json -d src/dev.params.tfvars.json
+destroy: ## Destroys all examples
+	mass bundle build
+	ruby ./tf_helper.rb destroy | bash
