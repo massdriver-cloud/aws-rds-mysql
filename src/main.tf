@@ -54,11 +54,9 @@ resource "aws_db_instance" "main" {
   # replicate_source_db     = var.replicate_source_db
   # replica_mode            = var.replica_mode
 
-  # enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
-  # audit, error, general, slowquery
-
-  monitoring_interval = var.observability.enhanced_monitoring_interval
-  monitoring_role_arn = local.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
+  enabled_cloudwatch_logs_exports = lookup(var.observability, "enabled_cloudwatch_logs_exports", [])
+  monitoring_interval             = var.observability.enhanced_monitoring_interval
+  monitoring_role_arn             = local.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
 
   # performance_insights_enabled          = var.performance_insights_enabled
   # performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
