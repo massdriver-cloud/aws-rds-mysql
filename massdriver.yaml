@@ -25,6 +25,7 @@ params:
         skip_final_snapshot: true
       observability:
         enhanced_monitoring_interval: 0
+        enabled_cloudwatch_logs_exports: [slowquery]
     - __name: "Production (Est. Cost: $881/mo)"
       database:
         deletion_protection: true
@@ -44,6 +45,7 @@ params:
         skip_final_snapshot: false
       observability:
         enhanced_monitoring_interval: 30
+        enabled_cloudwatch_logs_exports: [audit, error, general, slowquery]
   required:
     - database
     - networking
@@ -413,6 +415,22 @@ params:
               const: 30
             - title: 60 seconds
               const: 60
+        enabled_cloudwatch_logs_exports:
+          title: Enable CloudWatch Logs Exports
+          description: Enables exporting specific MySQL logs to CloudWatch.
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            oneOf:
+              - title: General
+                const: general
+              - title: Slow Query
+                const: slowquery
+              - title: Audit
+                const: audit
+              - title: Error
+                const: error
 
 connections:
   required:
@@ -447,4 +465,4 @@ ui:
   networking:
     ui:order: [subnet_type]
   observability:
-    ui:order: [enhanced_monitoring_interval]
+    ui:order: [enabled_cloudwatch_logs_exports, enhanced_monitoring_interval]
