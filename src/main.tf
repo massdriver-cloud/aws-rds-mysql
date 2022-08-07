@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   vpc_id = element(split("/", var.network.data.infrastructure.arn), 1)
   mysql = {
@@ -5,8 +7,9 @@ locals {
     port     = 3306
   }
 
-  paramter_group_family = "mysql${var.database.engine_version}"
-  parameters            = (var.database.parameters == null ? [] : var.database.parameters)
+  enable_enhanced_monitoring = lookup(var.observability, "enhanced_monitoring_interval", 0) > 0
+  paramter_group_family      = "mysql${var.database.engine_version}"
+  parameters                 = lookup(var.database, "parameters", [])
 
   subnet_ids = {
     "internal" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
@@ -41,39 +44,25 @@ resource "aws_db_instance" "main" {
   max_allocated_storage = var.storage.max_allocated
   storage_type          = var.storage.type
 
-  # We have a note in the UI that `iops` is only applied if the storage type is `io1`
-  iops = var.storage.type == "io1" ? lookup(var.storage, "iops", null) : null
-
-  # TODO: disk encryption if storage_encrypted is set to true and a kms key is used, will it use the kms key
-  # is this field even needed then?
+  iops              = var.storage.type == "io1" ? lookup(var.storage, "iops", null) : null
   storage_encrypted = true
   kms_key_id        = aws_kms_key.mysql_encryption.arn
 
-  # TODO: can we enabled this w/o requiring IAM (ie, using mysql pw)
   # iam_database_authentication_enabled = var.iam_database_authentication_enabled
-
-  # TODO: accept vpc_security_group_ids
-  # vpc_security_group_ids              = compact(concat(aws_security_group.main.*.id, var.vpc_security_group_ids))
-
-  # option_group_name      = var.option_group_name
-
-  # availability_zone   = var.availability_zone
-  # multi_az            = var.multi_az
-
   # apply_immediately           = var.apply_immediately
   # maintenance_window          = var.maintenance_window
-
   # replicate_source_db     = var.replicate_source_db
   # replica_mode            = var.replica_mode
+
+  # enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
+  # audit, error, general, slowquery
+
+  monitoring_interval = var.observability.enhanced_monitoring_interval
+  monitoring_role_arn = local.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
 
   # performance_insights_enabled          = var.performance_insights_enabled
   # performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
   # performance_insights_kms_key_id       = var.performance_insights_enabled ? var.performance_insights_kms_key_id : null
-
-  # monitoring_interval     = var.monitoring_interval
-  # monitoring_role_arn     = var.monitoring_interval > 0 ? local.monitoring_role_arn : null
-  # enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
-  # audit, error, general, slowquery
 
   vpc_security_group_ids    = [aws_security_group.main.id]
   db_subnet_group_name      = aws_db_subnet_group.main.name
@@ -105,9 +94,6 @@ resource "aws_db_subnet_group" "main" {
 resource "aws_kms_key" "mysql_encryption" {
   description             = "MySQL Encryption Key for ${var.md_metadata.name_prefix}"
   deletion_window_in_days = 30
-  # policy                  = data.aws_iam_policy_document.flow_log_encryption_key_policy[each.key].json
-  # multi_region = ?
-  # enable_key_rotation = ?
 }
 
 resource "aws_kms_alias" "mysql_encryption" {
@@ -121,7 +107,7 @@ resource "aws_security_group" "main" {
   description = "Control traffic to/from RDS MySQL ${var.md_metadata.name_prefix}"
 }
 
-# TODO: Remove this once we have application bundles working.
+# Note: this rule here is to support ingress from the VPC until we add in security group support for applications in AWS
 resource "aws_security_group_rule" "vpc_ingress" {
   count       = 1
   description = "From allowed CIDRs"

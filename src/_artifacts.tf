@@ -10,7 +10,7 @@ locals {
   }
 
   data_security = {
-    groups = {
+    network = {
       mysql = {
         arn      = aws_security_group.main.arn
         port     = local.mysql.port
