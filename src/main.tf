@@ -9,7 +9,7 @@ locals {
 
   enable_enhanced_monitoring  = lookup(var.observability, "enhanced_monitoring_interval", 0) > 0
   enable_performance_insights = lookup(var.observability, "performance_insights_retention_period", 0) > 0
-  paramter_group_family       = "mysql${var.database.engine_version}"
+  parameter_group_family      = "mysql${var.database.engine_version}"
   parameters                  = lookup(var.database, "parameters", [])
 
   subnet_ids = {
@@ -49,12 +49,6 @@ resource "aws_db_instance" "main" {
   storage_encrypted = true
   kms_key_id        = aws_kms_key.mysql_encryption.arn
 
-  # iam_database_authentication_enabled = var.iam_database_authentication_enabled
-  # apply_immediately           = var.apply_immediately
-  # maintenance_window          = var.maintenance_window
-  # replicate_source_db     = var.replicate_source_db
-  # replica_mode            = var.replica_mode
-
   enabled_cloudwatch_logs_exports = lookup(var.observability, "enabled_cloudwatch_logs_exports", [])
   monitoring_interval             = var.observability.enhanced_monitoring_interval
   monitoring_role_arn             = local.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
@@ -73,6 +67,12 @@ resource "aws_db_instance" "main" {
   backup_retention_period   = var.backup.retention_period
   delete_automated_backups  = var.backup.delete_automated_backups
 
+
+  # iam_database_authentication_enabled = var.iam_database_authentication_enabled
+  # apply_immediately                   = var.apply_immediately
+  # maintenance_window                  = var.maintenance_window
+  # replicate_source_db                 = var.replicate_source_db
+  # replica_mode                        = var.replica_mode
   # TODO: best way to represent this in the UI?
   # Need time-only widget: https://github.com/rjsf-team/react-jsonschema-form/tree/3ec17f1c0ff40401b7a99c5e9891ac2834a1e73f/packages/core/src/components/widgets
   # backup_window           = var.backup_window
@@ -121,8 +121,8 @@ resource "aws_security_group_rule" "vpc_ingress" {
 
 resource "aws_db_parameter_group" "main" {
   name_prefix = var.md_metadata.name_prefix
-  description = "Paramter group for RDS MySQL ${var.md_metadata.name_prefix}"
-  family      = local.paramter_group_family
+  description = "Parameter group for RDS MySQL ${var.md_metadata.name_prefix}"
+  family      = local.parameter_group_family
 
   dynamic "parameter" {
     for_each = local.parameters
