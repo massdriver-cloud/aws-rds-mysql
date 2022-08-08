@@ -7,9 +7,10 @@ locals {
     port     = 3306
   }
 
-  enable_enhanced_monitoring = lookup(var.observability, "enhanced_monitoring_interval", 0) > 0
-  paramter_group_family      = "mysql${var.database.engine_version}"
-  parameters                 = lookup(var.database, "parameters", [])
+  enable_enhanced_monitoring  = lookup(var.observability, "enhanced_monitoring_interval", 0) > 0
+  enable_performance_insights = lookup(var.observability, "performance_insights_retention_period", 0) > 0
+  paramter_group_family       = "mysql${var.database.engine_version}"
+  parameters                  = lookup(var.database, "parameters", [])
 
   subnet_ids = {
     "internal" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
@@ -58,9 +59,9 @@ resource "aws_db_instance" "main" {
   monitoring_interval             = var.observability.enhanced_monitoring_interval
   monitoring_role_arn             = local.enable_enhanced_monitoring ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
 
-  # performance_insights_enabled          = var.performance_insights_enabled
-  # performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
-  # performance_insights_kms_key_id       = var.performance_insights_enabled ? var.performance_insights_kms_key_id : null
+  performance_insights_enabled          = local.enable_performance_insights
+  performance_insights_retention_period = local.enable_performance_insights ? lookup(var.observability, "performance_insights_retention_period", 7) : null
+  performance_insights_kms_key_id       = local.enable_performance_insights ? aws_kms_key.mysql_encryption.arn : null
 
   vpc_security_group_ids    = [aws_security_group.main.id]
   db_subnet_group_name      = aws_db_subnet_group.main.name

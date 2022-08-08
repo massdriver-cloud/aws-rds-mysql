@@ -25,6 +25,7 @@ params:
         skip_final_snapshot: true
       observability:
         enhanced_monitoring_interval: 0
+        performance_insights_retention_period: 0
         enabled_cloudwatch_logs_exports: [slowquery]
     - __name: "Production (Est. Cost: $881/mo)"
       database:
@@ -45,6 +46,7 @@ params:
         skip_final_snapshot: false
       observability:
         enhanced_monitoring_interval: 30
+        performance_insights_retention_period: 372
         enabled_cloudwatch_logs_exports: [audit, error, general, slowquery]
   required:
     - database
@@ -396,7 +398,7 @@ params:
       description: Advanced logging and monitoring options.
       properties:
         enhanced_monitoring_interval:
-          title: Enhanced Monitoring
+          title: Enhanced Monitoring Interval
           description: Monitoring interval for operating system metrics of your DB instance in real time. When you want to see how different processes or threads use the CPU, Enhanced Monitoring metrics are useful.
           type: integer
           default: 0
@@ -415,6 +417,26 @@ params:
               const: 30
             - title: 60 seconds
               const: 60
+        performance_insights_retention_period:
+          title: Performance Insights Retention Period
+          description: Performance Insights is a database performance tuning and monitoring feature that helps you quickly assess the load on your database, and determine when and where to take action. Performance Insights allows non-experts to detect performance problems with an easy-to-understand dashboard that visualizes database load.
+          type: integer
+          default: 0
+          oneOf:
+            - title: Disabled
+              const: 0
+            - title: 1 Week
+              const: 7
+            - title: 1 Month
+              const: 31
+            - title: 3 Months
+              const: 93
+            - title: 6 Months
+              const: 186
+            - title: 1 Year
+              const: 372
+            - title: 2 Years
+              const: 731
         enabled_cloudwatch_logs_exports:
           title: Enable CloudWatch Logs Exports
           description: Enables exporting specific MySQL logs to CloudWatch.
@@ -465,4 +487,9 @@ ui:
   networking:
     ui:order: [subnet_type]
   observability:
-    ui:order: [enabled_cloudwatch_logs_exports, enhanced_monitoring_interval]
+    ui:order:
+      [
+        enabled_cloudwatch_logs_exports,
+        performance_insights_retention_period,
+        enhanced_monitoring_interval,
+      ]
