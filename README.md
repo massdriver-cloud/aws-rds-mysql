@@ -51,7 +51,7 @@ Form input parameters for configuring a bundle for deployment.
 
 - **`backup`** *(object)*
   - **`delete_automated_backups`** *(boolean)*: Specifies whether to remove automated backups immediately after the DB instance is deleted. Default: `True`.
-  - **`retention_period`** *(integer)*: The days to retain backups for. Must be between 0 and 35. Must be greater than 0 if the database is used as a source for a Read Replica. Minimum: `0`. Maximum: `35`. Default: `7`.
+  - **`retention_period`** *(integer)*: The days to retain backups for. Minimum: `0`. Maximum: `35`. Default: `7`.
   - **`skip_final_snapshot`** *(boolean)*: Determines whether a final DB snapshot is created before the DB cluster is deleted. If true is specified, no DB snapshot is created. Default: `False`.
 - **`database`** *(object)*
   - **`deletion_protection`** *(boolean)*: If the DB instance should have deletion protection enabled. Default: `True`.
