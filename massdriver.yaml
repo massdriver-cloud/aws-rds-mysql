@@ -1,7 +1,7 @@
 schema: draft-07
 name: "aws-rds-mysql"
 description: "AWS RDS for MySQL. Amazon RDS makes it easy to set up, operate, and scale MySQL deployments in the cloud. With Amazon RDS, you can deploy scalable MySQL servers in minutes with cost-efficient and resizable hardware capacity."
-ref: github.com/massdriver-cloud/aws-rds-mysql
+source_url: github.com/massdriver-cloud/aws-rds-mysql
 access: "public"
 type: "bundle"
 
