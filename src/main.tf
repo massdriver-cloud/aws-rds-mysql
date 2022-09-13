@@ -82,7 +82,6 @@ resource "aws_db_instance" "main" {
       latest_restorable_time
     ]
   }
-  iam_database_authentication_enabled = true
 }
 
 resource "aws_db_subnet_group" "main" {
