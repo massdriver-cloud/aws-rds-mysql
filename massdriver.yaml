@@ -84,6 +84,7 @@ params:
       type: object
       properties:
         subnet_type:
+          $md.immutable: true
           title: Subnet Type
           description: Deploy the database to internal subnets (cannot reach the internet) or private subnets (internet egress traffic allowed)
           type: string
