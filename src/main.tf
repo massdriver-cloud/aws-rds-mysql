@@ -13,7 +13,7 @@ locals {
   parameters                  = lookup(var.database, "parameters", [])
 
   subnet_ids = {
-    "internal" = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
+    "internal" = [for subnet in var.network.data.infrastructure.internal_subnets : element(split("/", subnet["arn"]), 1)]
     "private"  = [for subnet in var.network.data.infrastructure.private_subnets : element(split("/", subnet["arn"]), 1)]
   }
 }
