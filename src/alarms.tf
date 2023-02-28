@@ -1,5 +1,5 @@
 module "alarm_channel" {
-  source      = "github.com/massdriver-cloud/terraform-modules//aws-alarm-channel?ref=8997456"
+  source      = "github.com/massdriver-cloud/terraform-modules//aws/alarm-channel?ref=343d3e4"
   md_metadata = var.md_metadata
 }
 
@@ -10,7 +10,7 @@ locals {
 }
 
 module "primary_cpu_utilization" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=343d3e4"
   sns_topic_arn = module.alarm_channel.arn
   display_name  = "Primary CPU Utilization"
   depends_on = [
@@ -46,7 +46,7 @@ locals {
 }
 
 module "primary_disk_queue_depth" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=343d3e4"
   sns_topic_arn = module.alarm_channel.arn
   display_name  = "Primary Disk Queue Depth"
   depends_on = [
@@ -70,7 +70,7 @@ module "primary_disk_queue_depth" {
 }
 
 module "primary_free_storage_space" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=343d3e4"
   sns_topic_arn = module.alarm_channel.arn
   display_name  = "Primary Free Storage"
   depends_on = [
@@ -106,7 +106,7 @@ locals {
 }
 
 module "primary_freeable_memory" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=343d3e4"
   sns_topic_arn = module.alarm_channel.arn
   display_name  = "Primary Freeable Memory"
   depends_on = [
@@ -130,7 +130,7 @@ module "primary_freeable_memory" {
 }
 
 module "primary_swap_usage" {
-  source        = "github.com/massdriver-cloud/terraform-modules//aws-cloudwatch-alarm?ref=8997456"
+  source        = "github.com/massdriver-cloud/terraform-modules//aws/cloudwatch-alarm?ref=343d3e4"
   sns_topic_arn = module.alarm_channel.arn
   display_name  = "Primary Swap Usage"
   depends_on = [
