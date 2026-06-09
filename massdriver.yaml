@@ -460,15 +460,15 @@ connections:
   - aws_authentication
   properties:
     network:
-      "$ref": massdriver/aws-vpc
+      "$ref": aws-vpc
     aws_authentication:
-      "$ref": massdriver/aws-iam-role
+      "$ref": aws-iam-role
 artifacts:
   required:
   - authentication
   properties:
     authentication:
-      "$ref": massdriver/mysql-authentication
+      "$ref": mysql-authentication
 ui:
   ui:order:
   - database
